@@ -1,6 +1,8 @@
 package org.launchcode.javawebdevtechjobspersistent.controllers;
 
+import org.launchcode.javawebdevtechjobspersistent.models.Job;
 import org.launchcode.javawebdevtechjobspersistent.models.Skill;
+import org.launchcode.javawebdevtechjobspersistent.models.data.JobRepository;
 import org.launchcode.javawebdevtechjobspersistent.models.data.SkillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,14 +20,22 @@ public class SkillController {
     @Autowired
     private SkillRepository skillRepository;
 
-    @GetMapping("")
-    public String displayAddEmployerForm(Model model) {
-        model.addAttribute("skill", skillRepository.findAll());
-        return "skill/index";
+@RequestMapping("")
+public String index(Model model) {
+
+    model.addAttribute("skills", skillRepository.findAll());
+    return "skills/index";
+}
+
+    @GetMapping("add")
+    public String displayAddSkillForm(Model model) {
+
+        model.addAttribute(new Skill());
+        return "skills/add";
     }
 
     @PostMapping("add")
-    public String processAddEmployerForm(@ModelAttribute @Valid Skill newSkill,
+    public String processAddSkillForm(@ModelAttribute @Valid Skill newSkill,
                                          Errors errors, Model model) {
 
         if (errors.hasErrors()) {
@@ -38,13 +48,13 @@ public class SkillController {
     @GetMapping("view/{skillId}")
     public String displayViewSkill(Model model, @PathVariable int skillId) {
 
-        Optional optSkill = skillRepository.findById(skillId);
-        if (optSkill.isPresent()) {
-            Skill skill = (Skill) optSkill.get();
+        Optional optskill = skillRepository.findById(skillId);
+        if (optskill.isPresent()) {
+            Skill skill = (Skill) optskill.get();
             model.addAttribute("skill", skill);
             return "skills/view";
         } else {
-            return "redirect:../";
+            return "redirect:/";
         }
     }
 }
